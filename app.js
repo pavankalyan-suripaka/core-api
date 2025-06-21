@@ -8,6 +8,7 @@ import { requestLogger } from './middlewares/appLogger.js';
 import responseMiddleware from './middlewares/response.middlewear.js';
 import { Server } from 'socket.io';
 import http from "http";
+import fs from "fs"
 
 const app = express();
 config();
@@ -34,6 +35,10 @@ const corsOptions = {
 }
 
 app.use(cors(corsOptions));
+
+if(!fs.existsSync("./uploads")){
+    fs.mkdirSync("./uploads")
+}
 
 mongoose.connect(process.env.DB_URL, {
     useNewUrlParser: true,

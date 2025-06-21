@@ -2,7 +2,7 @@ import { generateAccessToken, validateInput } from "../utils/index.js";
 import { registerUserService, userLoginService } from "../service/authService.js";
 import { responseObj } from "../config/responseMesseges.js";
 import jwt from "jsonwebtoken";
-import { uploadFileS3 } from "../uploads/upload.js";
+import { uploadFileS3 } from "../s3FileUpload.js";
 import fs from "fs";
 
 export const registerUser = async (req, res) => {

@@ -30,14 +30,32 @@ export const generateRefreshToken = (user) => {
     return jwt.sign({ id: user._id }, process.env.REFRESH_SECRET, { expiresIn: "7d" })
 }
 
+// Multer disk storage
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "./uploads");
+    },
+    filename: (req, file, cb) => {
+        const uniqueName = `${Date.now()}_${file.originalname}`;
+        cb(null, uniqueName);
+    },
+});
+
 export const upload = multer({
-    dest:"/uploads",  // Temporary local folder
-    limits: {fileSize: 10*1024*1024},
-    fileFilter:(req, file, cb)=>{
-        if(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.mimetype)){
+    storage,
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+    fileFilter: (req, file, cb) => {
+        const allowedMimes = [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'image/png',
+            'image/jpeg',
+        ];
+        if (allowedMimes.includes(file.mimetype)) {
             cb(null, true);
-        }else{
-            cb(new Error("Only document files (PDF/DOC/DOCX) are allowed!", false));
+        } else {
+            cb(new Error('Invalid file type!'), false);
         }
-    }
-})
+    },
+});
