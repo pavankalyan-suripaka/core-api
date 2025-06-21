@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import { createUser, findUser } from "../repositories/authRepo.js";
-import { generateSequentialUserId } from "../utils/index.js";
-import jwt from "jsonwebtoken"
+import { generateAccessToken, generateSequentialUserId } from "../utils/index.js";
+import jwt from "jsonwebtoken";
 
 export const registerUserService = async (userData) => {
     try {
@@ -33,8 +33,9 @@ export const userLoginService = async (userData) => {
         if (!isPasswordCorrect) {
             return { isLoggedIn: false, token: null };
         }
-        const token = jwt.sign({ userId: existingUser.userId, email: existingUser.email }, process.env.SECRET_KEY, { expiresIn: '1d' })
-        return { isLoggedIn: true, token }
+        const accessToken = generateAccessToken({ existingUser });
+        const refreshToken = generateAccessToken({ _id: existingUser?.userId });
+        return { isLoggedIn: true, accessToken, refreshToken }
     } catch (error) {
         throw error;
     } finally {

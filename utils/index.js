@@ -1,4 +1,6 @@
 import Counter from "../model/counter.model.js";
+import jwt from "jsonwebtoken";
+import multer from "multer"
 
 export const generateSequentialUserId = async () => {
     const counter = await Counter.findByIdAndUpdate(
@@ -13,28 +15,29 @@ export const generateSequentialUserId = async () => {
 export const validateInput = async (fields) => {
     for (const [key, value] of Object.entries(fields)) {
         if (!value || value === null || value === undefined || (typeof value === "string" && value.trim() === "")) {
-            throw new Error(`Missing mandatory value of "${key}"`);
+            const error = new Error(`Missing mandatory value of "${key}"`)
+            error.statusCode = 400;
+            throw error;
         }
     }
 }
 
-// export const response = {
-//     end: (res, payload, data = null) => {
-//         return res.status(payload.status).json({
-//             id: payload.id,
-//             success: true,
-//             message: payload.message,
-//             data
-//         })
-//     },
-//     error: (res, payload, error) => {
-//         return res.status(payload.status).json({
-//             id: payload.id,
-//             success: false,
-//             message: payload.message,
-//             error
-//         })
-//     }
-// }
+export const generateAccessToken = (user) => {
+    return jwt.sign({ id: user?._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "15min" })
+}
 
-// global.response = response;
+export const generateRefreshToken = (user) => {
+    return jwt.sign({ id: user._id }, process.env.REFRESH_SECRET, { expiresIn: "7d" })
+}
+
+export const upload = multer({
+    dest:"/uploads",  // Temporary local folder
+    limits: {fileSize: 10*1024*1024},
+    fileFilter:(req, file, cb)=>{
+        if(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.mimetype)){
+            cb(null, true);
+        }else{
+            cb(new Error("Only document files (PDF/DOC/DOCX) are allowed!", false));
+        }
+    }
+})

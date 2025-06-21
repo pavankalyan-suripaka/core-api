@@ -6,6 +6,8 @@ import helmet from 'helmet';
 import cors from 'cors';
 import { requestLogger } from './middlewares/appLogger.js';
 import responseMiddleware from './middlewares/response.middlewear.js';
+import { Server } from 'socket.io';
+import http from "http";
 
 const app = express();
 config();
@@ -42,6 +44,13 @@ mongoose.connect(process.env.DB_URL, {
 
 
 app.use("/api", routes);
+
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: { origin: "*" }
+});
+
+global.io = io;
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`App is running on port:${PORT}`));

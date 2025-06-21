@@ -1,4 +1,4 @@
-const statusCodes = {
+export const statusCodes = {
     // Success Codes
     OK: 200, // Standard success response
     CREATED: 201, // Resource successfully created
@@ -41,5 +41,20 @@ export const responseObj = {
         id: "04",
         status: statusCodes.UNAUTHORIZED,
         message: "Invalid username and password"
+    },
+    REFRESH_TOKEN_REQUIRED: {
+        id: "04",
+        status: statusCodes.UNAUTHORIZED,
+        message: "Refresh token required"
+    },
+    TOKEN_GENERATED_SUCCESSFULLY: {
+        id: "04",
+        status: statusCodes.UNAUTHORIZED,
+        message: "Token generated successfully"
+    },
+    FILE_UPLOADED_SUCCESSFULLY: {
+        id: "05",
+        status: statusCodes.OK,
+        message: "File uploaded successfully"
     }
 }
