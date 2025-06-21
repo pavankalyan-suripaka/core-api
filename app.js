@@ -36,7 +36,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-if(!fs.existsSync("./uploads")){
+if (!fs.existsSync("./uploads")) {
     fs.mkdirSync("./uploads")
 }
 
