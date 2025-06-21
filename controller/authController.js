@@ -65,11 +65,11 @@ export const refreshToken = async (req, res) => {
     }
 }
 
-export const uploadDocument = async (req, res)=>{
+export const uploadDocument = async (req, res) => {
     try {
         appLogger.info("authController: refreshToken - Start");
         const file = req.file;
-        if(!file){
+        if (!file) {
             return res.status(400).json({
                 success: false,
                 message: "Please upload file"
@@ -77,11 +77,11 @@ export const uploadDocument = async (req, res)=>{
         }
 
         const result = await uploadFileS3(file);
-         // Delete local file after upload
+        // Delete local file after upload
         fs.unlinkSync(file.path);
-        return res.success(responseObj.FILE_UPLOADED_SUCCESSFULLY, {url: result?.location});
+        return res.success(responseObj.FILE_UPLOADED_SUCCESSFULLY, { url: result?.location });
     } catch (error) {
-         appLogger.error(`authController: uploadDocument - Error`, {
+        appLogger.error(`authController: uploadDocument - Error`, {
             message: error?.message,
             stack: error?.stack,
         });
